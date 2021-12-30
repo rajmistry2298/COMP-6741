@@ -1,0 +1,56 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dbo: <http://www.dbpedia.org/ontology/> .
+@prefix dbr: <http://www.dbpedia.org/resource/> .
+@prefix uni: <http://uni.io/schema#> .
+@prefix unidata: <http://uni.io/data#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix dcmitype: <http://purl.org/dc/dcmitype/> .
+@prefix dc:   <http://purl.org/dc/elements/1.1/> .
+
+#----------------------------------------------------------------
+# Schema
+#----------------------------------------------------------------
+# University
+uni:University
+    a rdfs:Class ;
+    rdfs:subClassOf dcterms:Agent ; 
+    rdfs:label "University"@en ;
+    rdfs:comment "University information" .
+
+# Course
+uni:Course
+    a rdfs:Class ;
+    rdfs:subClassOf dcterms:Agent ; 
+    rdfs:label "Course"@en ;
+    rdfs:comment "Courses offered at University"@en .
+
+# Lectures
+uni:Lecture
+    a rdfs:Class ;
+    rdfs:subClassOf dcmitype:Event ;
+    rdfs:label "Lecture"@en ;
+    rdfs:comment "Information about lecture"@en .
+
+#Lab/Tutorial
+uni:Event
+    a rdfs:Class ;
+    rdfs:subClassOf uni:Lecture ;
+    rdfs:label "Lecture Event"@en ;
+    rdfs:comment "Events associated with a Lecture such as Lab ror Tutorial"@en .
+
+#An course or event can be associated with topics
+uni:topic
+    a rdf:property ;
+    rdfs:subPropertyOf dcterms:subject ;
+    rdfs:label "Topic"@en ;
+    rdfs:comment "URI"@en .
+
+#Course, lecture or events can have contents associated
+uni:hasContent
+    a rdf:property ;
+    rdfs:subClassOf dcterms:relation ;
+    rdfs:label "Content"@en ;
+    rdfs:range dcterms:BibliographicResource
+    rdfs:comment "Content associated with a course, lecture"@en .

@@ -1,0 +1,437 @@
+René Witte
+Introduction
+Neural Networks 101
+Perceptron
+Backpropagation
+Keras & TensorFlow
+Word Embeddings
+Bag-of-Words Model
+One-Hot Vectors
+Word Embeddings with
+Word2vec
+Word Vectors with spaCy
+Fasttext
+Document vectors with
+Doc2vec
+Notes and Further
+Reading
+10.1
+Lecture 10
+Neural Networks & Word Embeddings
+COMP 474/6741, Winter 2021
+Department of Computer Science
+and Software Engineering
+Concordia University
+10.2
+Outline
+1 Introduction
+2 Neural Networks 101
+3 Word Embeddings
+4 Notes and Further Reading
+10.3
+Summary of Chatbot Approaches
+Copyright 2019 by Manning Publications Co., [LHH19]
+10.4
+Generative Models
+Examples
+• Generate answers to analogy questions like:
+“Man is to Woman what King is to ___?”
+“Japan is to Sushi what Germany is to ___?”
+Today
+• Introduction to Neural Networks
+• Building word vectors (word embeddings)
+• Math with word vectors
+→ Worksheet #9: Task 1
+10.5
+10.6
+Say hello to one of your neurons
+10.7
+Basic Perceptron (Franz Rosenblatt, 1957)
+10.8
+Perceptron Details
+Mathematical Perceptron
+Input vector:
+~x = [x0, x1, ..., xn]
+Weights vector:
+~w = [w0,w1, ...,wn]
+Dot product:
+~x · ~w =
+n∑
+0
+wi · xi
+Activation function:
+f (~x) =
+{
+1, if ~x · ~w ≥ threshold
+0, otherwise
+The ’bias’ unit & weight
+• Bias: additional input that is always “1”
+• Why? Consider the case that all xi = 0, but we need to output 1
+• Notation differs in the literature, but idea is always the same
+10.9
+Perceptron vs. Biological Neuron
+→ Worksheet #9: Task 2
+10.10
+Perceptron Learning
+Learning the weights
+Perceptron uses supervised learning:
+• look at each training sample
+• output correct?
+• Yes: don’t change any weights
+• No: update the weights that were activated
+Updating the weights
+Based on how much they contributed to the error:
+• w ′i = wi + η · (label − predicted) · xi
+(label: training example, predicted: calculated output)
+• η is called the learning rate (e.g., η = 0.2)
+• Going through all training examples once is called an epoch
+→ Worksheet #9: Task 3
+10.11
+Linearly Separable Data
+10.12
+Nonlinearly Separable Data
+10.13
+Perceptron Learning Rule
+What can a single Perceptron learn?
+• A single Perceptron can learn
+linearly separable data
+• Two dimensions: line,
+three dimensions: plane, etc.
+• It can not learn data that is not
+linearly separable
+• Example: the XOR function
+This was pointed out in a famous book by
+Minksy & Papert in 1969∗
+So what, it’s useless?
+Not quite. . . so far, we only used a single neuron.
+• We can use a network of neurons to also learn non-linearly separable data!
+∗[Marvin Minsky and Seymour Papert: Perceptrons: an introduction to computational geometry, MIT Press, 1969]
+10.14
+Multi-layer neural networks with hidden weights
+10.15
+Training multi-layer neural networks
+• First proposed in 1969, but not used until 1980s because of high computational
+demands
+• Form of supervised learning like Perceptron training
+• Basic idea like before: show input, compute output, determine error, and adjust
+weights to reduce error
+• learning is done in two phases
+• first, apply input and propagate forward until output layer is reached
+• then, compute error and propagate backwards, adjusting weights until input layer is
+reached
+10.16
+Forward step
+Weighted input
+Neurons in backpropagation networks compute the net weighted input like the
+Perceptron:
+X =
+i=1
+xiwi − θ
+Activation function
+But here we use a sigmoid activation function
+Y sigmoid =
+1
+1 + e−X
+10.17
+Updating weights
+Backpropagation rule
+• compute the gradient of the loss function with respect to the weights of the
+network for a single input–output example
+• iterating backwards from output layer to input layer, updating weights
+• intuitively: minimize cost function representing the error of the network
+• algorithm performs gradient descent to try minimizing the error
+10.18
+Convex Error Curve
+10.19
+Nonconvex Error Curve
+10.23
+Example Neural Network in Keras
+from numpy import loadtxt
+from keras.models import Sequential
+from keras.layers import Dense
+# load the dataset
+dataset = loadtxt(’pima-indians-diabetes.data.csv’, delimiter=’,’)
+# split into input (X) and output (y) variables
+X = dataset[:,0:8]
+y = dataset[:,8]
+# define the keras model
+model = Sequential()
+model.add(Dense(12, input_dim=8, activation=’relu’))
+model.add(Dense(8, activation=’relu’))
+model.add(Dense(1, activation=’sigmoid’))
+# compile the keras model
+model.compile(loss=’binary_crossentropy’, optimizer=’adam’, metrics=[’accuracy’])
+# fit the keras model on the dataset
+model.fit(X, y, epochs=150, batch_size=10)
+Example
+• Using the Pima Indians Diabetes dataset (predicting the onset of diabetes
+based on diagnostic measures, like 2-Hour serum insulin (mu U/ml) and
+Diastolic blood pressure (mm Hg)
+See https://machinelearningmastery.com/tutorial-first-neural-network-python-keras/
+https://machinelearningmastery.com/tutorial-first-neural-network-python-keras/
+10.24
+Output
+Using TensorFlow backend.
+Epoch 1/150
+768/768 [==============================] - 0s 257us/step - loss: 4.7881 - accuracy: 0.6107
+Epoch 2/150
+768/768 [==============================] - 0s 87us/step - loss: 0.8344 - accuracy: 0.5964
+Epoch 3/150
+768/768 [==============================] - 0s 93us/step - loss: 0.7119 - accuracy: 0.6510
+Epoch 4/150
+768/768 [==============================] - 0s 87us/step - loss: 0.6776 - accuracy: 0.6484
+Epoch 5/150
+768/768 [==============================] - 0s 87us/step - loss: 0.6315 - accuracy: 0.6888
+Epoch 6/150
+768/768 [==============================] - 0s 84us/step - loss: 0.6358 - accuracy: 0.6602
+Epoch 7/150
+768/768 [==============================] - 0s 89us/step - loss: 0.6254 - accuracy: 0.6810
+Epoch 8/150
+768/768 [==============================] - 0s 85us/step - loss: 0.6086 - accuracy: 0.6615
+Epoch 9/150
+768/768 [==============================] - 0s 80us/step - loss: 0.6121 - accuracy: 0.6745
+Epoch 10/150
+768/768 [==============================] - 0s 80us/step - loss: 0.6072 - accuracy: 0.6745
+...
+Epoch 150/150
+768/768 [==============================] - 0s 86us/step - loss: 0.5269 - accuracy: 0.7096
+10.25
+Word Embeddings with Word2vec
+Document vectors with Doc2vec
+10.26
+Bag-of-Words (BOW) Model
+Task
+Turn words into numbers.
+10.27
+Problems with the Bag-of-Words Model
+Word order is ignored
+Meaning of the text is lost.
+10.28
+Vector dimensionality = Vocabulary size
+With n-dimensional vectors of {0,1}, we can represent each word in our vocabulary
+that has 1 (one) for the word, else 0 (zero).
+We can encode the sentence The big dog as a series of three-dimensional vectors:
+the big dog
+1 0 0
+0 1 0
+0 0 1
+(a “1” means on, or hot; a “0” means off, or absent.)
+Note
+• Unlike in the BOW model, we do not lose information
+• Not practical for long documents
+10.29
+The ‘Curse of Dimensionality’
+https://en.wikipedia.org/wiki/Curse_of_dimensionality
+→ Worksheet #9: Task 4
+10.30
+Towards better ‘word vectors’
+Word Vector Requirements
+• Dense vectors (smaller dimensions, fewer 0’s)
+• Capture semantics of words
+• E.g., Animal-ness, Place-ness, Action-ness. . .
+• The (cosine) distance between “cat” and “dog” should be smaller than between
+“cat” and “house”
+• Synonyms (e.g., “inflammable” and “flammable”) should have nearly identical word
+vectors
+Answer analogy questions
+We could then use these vectors for semantic word math, e.g., to answer analogy
+questions like:
+“Who is to physics what Louis Pasteur is to germs?”
+By calculating ~w(’Louis Pasteur’) −~w(’germs’) +~w(’physics’)
+→ Worksheet #9: Task 5
+10.31
+Hand-crafting Word Vectors (6 words, 3 dimensions)
+word_vector[’cat’] = .3*topic[’petness’] +
+.1*topic[’animalness’] +
+0*topic[’cityness’]
+word_vector[’dog’] = .3*topic[’petness’] +
+.1*topic[’animalness’] -
+.1*topic[’cityness’]
+word_vector[’apple’] = 0*topic[’petness’] -
+.2*topic[’cityness’]
+word_vector[’lion’] = 0*topic[’petness’] +
+.5*topic[’animalness’] -
+word_vector[’NYC’] = -.2*topic[’petness’] +
+.5*topic[’cityness’]
+word_vector[’love’] = .2*topic[’petness’] -
+10.32
+3D vectors for six words about pets and NYC
+10.33
+Automatic computation of word vectors
+• In 2012, Thomas Mikolov (intern at Microsoft) trained a neural network to
+predict word occurrences near each target word
+• Released in 2013 (then working at Google) as Word2vec
+• Word vectors (a.k.a. word embeddings) typically have 100-500 dimensions and
+are trained on large corpora (e.g., Google’s 100 billion words news feed)
+• Unsupervised learning (using a so-called autoencoder)
+10.34
+Geometry of Word2vec math
+10.35
+Computing the answer to the soccer team question
+Finding word vectors near the result
+• Result vector (with 100s of dimensions) is not going to match any other word
+vector exactly
+• Find closest results (e.g., using cosine similarity) for the answer
+10.36
+Word vectors for ten US cities projected onto a 2D map
+10.37
+Training a Word2vec model
+Approaches
+Skip-gram: predict the context of words (output words) from an input word
+CBOW: (continuous-bag-of-words) predicts output word from nearby (input)
+words
+Using a pre-trained model
+You can download pre-trained word embeddings for many domains:
+• Google’s Word2vec model trained on Google News articles
+• spaCy comes with word vector models (shown later)
+• Facebook’s fastText model (for 294 languages)
+• Various models trained on medical documents, Harry Potter, LOTR, ...
+10.38
+Training input and output example for the skip-gram approach
+Skip-gram
+• Skip-gram is an n-gram with gaps
+• Goal: predict surrounding window of words based on input word
+10.39
+Training: Ten 5-grams from the sentence about Monet
+10.40
+Neural Network example for the skip-gram training (1/2)
+10.41
+Softmax
+Softmax function
+The softmax function σ takes as input a vector of K real numbers, and normalizes it
+into a probability distribution consisting of K probabilities proportional to the
+exponentials of the input numbers:
+σ(z)j =
+ezj∑K
+k=1 e
+zk
+(e = Euler’s number ≈ 2.71828)
+Softmax properties
+• “normalizes” vector to a [0..1] interval, where all values add up to 1
+• often used as activation function in the output layer of a neural network
+→ Worksheet #9: Task 6
+10.42
+Neural Network example for the skip-gram training (2/2)
+10.43
+Conversion of one-hot vector to word vector
+10.44
+In other words...
+Hidden weights are our word vectors
+• We’re not actually using the neural network we trained
+• We’re just using the weights as our word embeddings
+• (that’s a common trick in using neural networks)
+Why does this work?
+• Two different words that have a similar meaning will have similar context words
+appearing around them
+• So the output vector for these different words have to be similar
+• So the neural network has to learn weights for the hidden layer that map these
+(different) input words to similar output vectors
+• So we will get similar word vectors for words that have a different surface form,
+but similar (or related) semantics
+This does not solve the disambiguation problem: there will be one word vector for
+“bank”, including both “river bank” and “financial bank” contexts.
+10.45
+Now what?
+Now we can do math with word vectors:
+king − man + woman = queen
+Paris − France + Germany = Berlin
+fish + music = bass
+road − ocean + car = sailboat
+desert − sand + suburbia = driveways
+dorm − students = bachelor pad
+barn − cows = garage
+yeti − snow + economics = homo economicus
+See https://graceavery.com/word2vec-fish-music-bass/ for more fun examples
+https://graceavery.com/word2vec-fish-music-bass/
+10.46
+Continuous Bag Of Words (CBOW)
+Idea
+• Slide a rolling window across a sentence to select the surrounding words for
+the target word
+• All words within the sliding window are considered to be the content of the
+CBOW
+10.47
+Training input and output example for the CBOW approach
+10.48
+Ten CBOW 5-grams from sentence about Monet
+10.49
+CBOW Word2vec network
+10.50
+Which one to use?
+Pros & Cons
+• Skip-gram approach works well with small corpora and rare terms (more
+training data due to the network structure)
+• CBOW shows higher accuracies for frequent words and is faster to train
+10.51
+Enhancements & Optimizations
+Various Improvements
+Frequent Bigrams: Pre-process the corpus and add frequent bigrams as terms
+(e.g., “New York”, “Elvis Presley”)
+Subsampling: Sample words according to their frequencies (no stop word removal
+for words like “a”, “the”) – similar to idf in tf-idf
+Negative sampling: To speed up training, don’t update all weights, but pick some
+negative samples to decide which weights to update
+10.52
+Using Word Vectors with spaCy
+import spacy
+nlp = spacy.load("en_core_web_lg") # make sure to use larger model!
+tokens = nlp("dog cat banana")
+for token1 in tokens:
+for token2 in tokens:
+print(token1.text, token2.text, token1.similarity(token2))
+dog dog 1.0
+dog cat 0.80168545
+dog banana 0.24327646
+cat dog 0.80168545
+cat cat 1.0
+cat banana 0.2815437
+banana dog 0.24327646
+banana cat 0.2815437
+banana banana 1.0
+Training your own Word2vec model using gensim
+10.54
+Google News Word2vec 300-D vectors projected onto a 2D map using PCA
+10.55
+Word vectors can be biased
+Your word vectors represent what is in your corpus:
+>>> word_model.distance(’man’, ’nurse’)
+0.7453
+>>> word_model.distance(’woman’, ’nurse’)
+0.5586
+So an AI using these word vectors will now have a gender bias!
+10.56
+fasttext.cc
+Idea: train on character n-grams, not on word n-grams:
+• E.g., for “whisper”, we can generate the following 2-grams and 3-grams
+wh, whi, hi, his, is, isp, sp, spe, pe, per, er
+• We can now deal with unseen words, misspelled words, partial words, etc.
+• Open source project by Facebook research; pre-trained models for 294
+languages from Abkhazian to Zulu
+10.57
+Doc2vec Training
+10.58
+10.59
+Reading Material
+Required
+• [LHH19, Chapters 5, 6] (Neural Networks, Word Vectors)
+10.60
+References
+[LHH19] Hobson Lane, Cole Howard, and Hannes Max Hapke.
+Natural Language Processing in Action.
+Manning Publications Co., 2019.
+https://concordiauniversity.on.worldcat.org/oclc/1102387045.
+https://concordiauniversity.on.worldcat.org/oclc/1102387045
+Neural Networks
+Introduction
+Neural Networks 101
+Perceptron
+Backpropagation
+Keras & TensorFlow
+Word Embeddings
+Bag-of-Words Model
+One-Hot Vectors
+Word Embeddings with Word2vec
+Word Vectors with spaCy
+Fasttext
+Document vectors with Doc2vec
+Notes and Further Reading

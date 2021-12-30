@@ -1,0 +1,73 @@
+version: "2.0"
+
+intents:
+  - greet
+  - goodbye
+  - affirm
+  - deny
+  - mood_great
+  - mood_unhappy
+  - bot_challenge
+  - about_person
+  - about_course
+  - about_outline
+  - about_course_number
+  - about_course_reading
+  - about_subject
+  - about_course_content
+  - about_lecture_topics
+  - about_event
+  - about_lecture_by_topic
+  - about_course_by_topic
+
+entities:
+  - person
+  - course
+  - event
+  - topic
+
+
+slots:
+  person:
+    type: any
+    initial_value: "initial"
+  course:
+    type: text
+    initial_value: "NA"
+  event:
+    type: text
+    initial_value: "NA"
+  topic:
+    type: text
+    initial_value: "NA"
+
+actions:
+  - action_person_info
+  - action_course_query
+
+responses:
+  utter_greet:
+  - text: "Hey! How are you?"
+
+  utter_cheer_up:
+  - text: "Here is something to cheer you up:"
+    image: "https://i.imgur.com/nGF1K8f.jpg"
+
+  utter_did_that_help:
+  - text: "Did that help you?"
+
+  utter_happy:
+  - text: "Great, carry on!"
+
+  utter_goodbye:
+  - text: "Bye"
+
+  utter_iamabot:
+  - text: "I am a bot, powered by Rasa."
+
+  utter_iamunibot:
+  - text: "Hello, I am the Univeristy bot. How may I help?"
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

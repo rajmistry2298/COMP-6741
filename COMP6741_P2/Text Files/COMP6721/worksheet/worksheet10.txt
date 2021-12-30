@@ -1,0 +1,52 @@
+COMP 6721 Applied Artificial Intelligence (Winter 2021)
+Worksheet #10: NLP: Applications, Vector Space Models
+Information Extraction. The detection of Named Entities (NEs) is a standard NLP application, called InformationÏ
+Extraction (IE). A popular Python library for developing NLP applications is spaCy,1 which has an online IE demo
+at https://explosion.ai/demos/displacy-ent. Try it out on an example text (e.g., a Concordia News article).
+Vector dot product. Given the following encoding for sent0 = “the big dog”, sent1 = “the big cat” and sent2 = “the
+big cat and dog”, compute their similarity as the dot product (~m · ~n =
+∑
+i mi · ni) of their vector representations:
+and big cat dog the
+sent0 0 1 0 1 1
+sent1 0 1 1 0 1
+sent2 1 1 1 1 1
+1. ~sent0 · ~sent1 =
+2. ~sent0 · ~sent2 =
+Term Frequency. Fill in the term frequency for the two documents (d1, d2):
+d1 = “The big dog barks.”
+d2 = “The big dog and the big cat.”
+Note: ignore words not in the table (we removed so-called stopwords).
+d1 d2
+token df idf tf tf.idf pi tf tf.idf qi
+dog 50,000
+barks 10,000
+big 100,000
+cat 10,000
+Inverse Document Frequency. Now compute the inverse document frequency, idf = log10
+N
+df
+and add it to the table.
+Assume N = 10,000,000 (number of documents).
+tf-idf Weights. You can now compute the tf-idf weights:
+wt,d =
+{
+(1 + log tft,d) · idft, if tft,d > 0
+0, otherwise
+(note that we already did the log-scaling for idf above). You now have each document represented as a vector ~di ∈ R|V |
+(here |V | = 4, the size of our vocabulary).
+Cosine Similarity. We can now compute the similarity between the two documents. First, compute the length-
+normalized vectors ~p, ~q for the two documents and add them to the table above. To normalize a vector, you have
+to (1) compute its length ||~v|| =
+√
+x21 + . . .+ x
+2
+n, then (2) divide each element by the length:
+xi
+||~v|| . Now you can
+compute the cosine similarity using the dot product of the normalized vectors, sim(d1, d2) = cos(~p, ~q) = ~p·~q =
+i pi ·qi:
+• cos(~p, ~q) =
+1https://explosion.ai/software#spacy
+https://explosion.ai/demos/displacy-ent
+https://explosion.ai/software#spacy

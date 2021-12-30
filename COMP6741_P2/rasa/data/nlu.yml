@@ -1,0 +1,164 @@
+version: "2.0"
+
+nlu:
+- intent: greet
+  examples: |
+    - hey
+    - hello
+    - hi
+    - hello there
+    - good morning
+    - good evening
+    - moin
+    - hey there
+    - let's go
+    - hey dude
+    - goodmorning
+    - goodevening
+    - good afternoon
+
+- intent: goodbye
+  examples: |
+    - good afternoon
+    - cu
+    - good by
+    - cee you later
+    - good night
+    - bye
+    - goodbye
+    - have a nice day
+    - see you around
+    - bye bye
+    - see you later
+
+- intent: affirm
+  examples: |
+    - yes
+    - y
+    - indeed
+    - of course
+    - that sounds good
+    - correct
+
+- intent: deny
+  examples: |
+    - no
+    - n
+    - never
+    - I don't think so
+    - don't like that
+    - no way
+    - not really
+
+- intent: mood_great
+  examples: |
+    - perfect
+    - great
+    - amazing
+    - feeling like a king
+    - wonderful
+    - I am feeling very good
+    - I am great
+    - I am amazing
+    - I am going to save the world
+    - super stoked
+    - extremely good
+    - so so perfect
+    - so good
+    - so perfect
+
+- intent: mood_unhappy
+  examples: |
+    - my day was horrible
+    - I am sad
+    - I don't feel very well
+    - I am disappointed
+    - super sad
+    - I'm so sad
+    - sad
+    - very sad
+    - unhappy
+    - not good
+    - not very good
+    - extremly sad
+    - so saad
+    - so sad
+
+- intent: bot_challenge
+  examples: |
+    - are you a bot?
+    - are you a human?
+    - am I talking to a bot?
+    - am I talking to a human?
+
+- intent: about_person
+  examples: |
+    - Who is he?
+    - Who is [Joe](person) ?
+    - Who is [Kate](person)?
+    - Who is [Harry](person)
+    - Tell me about him
+    - Tell me about
+    - Tell me about [Peter](person)
+    - Tell me about [Joe](person)
+    - Can you tell me about him?
+    - Can you tell me about [Jane](person)?
+    - Can you tell me about [Peter](person) ?
+    - Can you tell me about [Jonathan](person) ?
+    - Do you know [Alice](person) ?
+    - Tell me about [Jack](person) ?
+
+- intent: about_course
+  examples: |
+    - What is the course title and description of [COMP 6741](course)?
+    - What is [COMP 6741](course) about?
+
+- intent: about_outline
+  examples: |
+    - What is the outline for [COMP 6741](course)?
+    - Where can I find the outline for [COMP 6741](course)?
+    - What outline is provided for [COMP 6741](course)?
+
+- intent: about_course_number
+  examples: |
+    - How many courses are offered at Concordia University?
+
+- intent: about_course_reading
+  examples: |
+    - What are the recommended reading materials for [COMP 6741](course)?
+    - What should I read for [COMP 6741](course)?
+
+- intent: about_subject
+  examples: |
+    - List the courses for subject[COMP](course)?
+    - List the courses for [SOEN](course)?
+    - List the courses for [INSE](course)?
+    - Give the courses for [COMP](course)?
+
+- intent: about_course_content
+  examples: |
+    - What are the contents in [COMP 6741](course) for each lecture?
+
+- intent: about_lecture_topics
+  examples: |
+    - Which topics are covered in [COMP 6741](course) lectures?
+    - Which topics are covered in [LAB#2](event) of [COMP 6741](course)?
+
+- intent: about_event
+  examples: |
+    - Does [COMP 6741](course) has [LAB](event)?
+    - Are there [LAB](event) for [COMP 6741](course)?
+
+- intent: about_lecture_by_topic
+  examples: |
+    - Which lecture of [COMP 6741](course) covers [knowledge base](topic)?
+    - Which lecture of [COMP 6741](course) covers [machine learning](topic)?
+
+- intent: about_course_by_topic
+  examples: |
+    - Which courses cover [knowledge base](topic)?
+    - Which courses cover [machine learning](topic)?
+    - Which courses cover [topic](topic)?
+    - Which courses cover [Microsoft](topic)?
+    - Which courses covers the topic [intelligent system](topic)?
+    - Is topic [knowledge base](topic) covered in the courses?

@@ -1,0 +1,386 @@
+René Witte
+Introduction
+ImageNet
+AlexNet
+RNNs and LSTMs
+Recurrent Neural Networks
+(RNNs)
+Long Short-Term Memory
+Networks (LSTMs)
+Sequence-to-Sequence
+Models
+Transformers
+BERT
+GPT-2
+GPT-3
+Notes and Further
+Reading
+12.1
+Lecture 12
+Deep Learning for Intelligent Systems
+COMP 474/6741, Winter 2021
+Department of Computer Science
+and Software Engineering
+Concordia University
+12.2
+Outline
+1 Introduction
+2 RNNs and LSTMs
+3 Transformers
+4 Notes and Further Reading
+12.3
+Single Neuron (Perceptron)
+Copyright 2019 by Manning Publications Co., [LHH19]
+12.4
+Multi-layer neural networks with hidden weights
+12.5
+Convolutional Neural Network
+Copyright 2019 Applied Data Science Partners Ltd., [Fos19]
+12.6
+ImageNet Large Scale Visual Recognition Challenge (ILSVRC)
+10,000,000 labeled images depicting 10,000+ object categories (2012)
+Krizhevsky, Alex; Sutskever, Ilya; Hinton, Geoffrey E. “ImageNet classification with deep convolutional neural networks”. Communications of the ACM. 60(6): 84–90. doi:10.1145/306538
+https://papers.nips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b- Paper.pdf
+https://papers.nips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf
+12.7
+AlexNet (8-layer CNN, 2012)
+60 million parameters, trained using two GPUs
+https://medium.com/coinmonks/paper- review- of- alexnet- caffenet- winner- in- ilsvrc- 2012- image- classification- b93598314160
+https://medium.com/coinmonks/paper-review-of-alexnet-caffenet-winner-in-ilsvrc-2012-image-classification-b93598314160
+12.8
+Recurrent Neural Networks (RNNs)
+Long Short-Term Memory Networks (LSTMs)
+Sequence-to-Sequence Models
+12.9
+Remembering with recurrent networks
+Word history is important
+Consider:
+The stolen car sped into the arena.
+The clown car sped into the arena.
+Remembering past words
+• So far, we considered a sentence as whole
+• Now we allow a NN to look at the sequence of words
+12.10
+Recurrent Neural Net (RNN)
+12.11
+Unrolled Recurrent Neural Net
+12.12
+Detailed recurrent neural net at time step t = 0
+12.13
+Detailed recurrent neural net at time step t = 1
+12.14
+Text fed into a convolutional network
+12.15
+Text fed into a recurrent network
+12.16
+Only last output matters here
+12.17
+RNN in Keras
+model.add(SimpleRNN(num_neurons,
+return_sequences=True,
+input_shape=(maxlen, embedding_dims)))
+12.18
+Bidirectional RNN
+12.19
+Adding Deeper Memory
+Example
+Consider the sentences:
+The young woman went to the movies with her friends.
+The young woman, having found a free ticket on the ground, went to the
+movies.
+Finding relationship between subject and verb
+• In the second sentence, “woman” and “went” are too far apart for either a CNN
+or RNN to pick up
+• Need some kind of “memory” to keep the core thought of the sentence
+• Use a Long Short-Term Memory (LSTM) network
+[Understanding LSTM Networks, https://colah.github.io/posts/2015-08-Understanding-LSTMs/]
+https://colah.github.io/posts/2015-08-Understanding-LSTMs/
+12.20
+A LSTM Network with Memory
+12.21
+An LSTM Cell
+12.22
+Using an LSTM to Generate Text
+Task
+• Train LSTM on a text corpus (here: Aesop’s Fables)
+• Goal: predict next word after a given sequence of words
+12.23
+Step 1: Preprocessing
+Tokenization
+Can use basic tokenizer from Keras
+12.24
+Step 2: Generate the Dataset
+Goal: Sequences
+• We want the LSTM to learn the next word in a sequence
+• E.g., The fast and the ... (cat? at? house? ...)
+• Here, use 20-word sequences from input text
+• Expected output for input sequence is a one-hot vector with the next word
+See
+https://github.com/davidADSP/GDL_code/blob/master/06_01_lstm_text_train.ipynb
+12.25
+The Embedding Layer
+12.26
+The Recurrent Layer
+12.27
+Implementation in Keras
+from keras.layers import Dense, LSTM, Input, Embedding, Dropout
+from keras.models import Model
+from keras.optimizers import RMSprop
+n_units = 256
+embedding_size = 100
+text_in = Input(shape = (None,))
+x = Embedding(total_words, embedding_size)(text_in)
+x = LSTM(n_units)(x)
+x = Dropout(0.2)(x)
+text_out = Dense(total_words, activation = ’softmax’)(x)
+model = Model(text_in, text_out)
+opti = RMSprop(lr = 0.001)
+model.compile(loss=’categorical_crossentropy’, optimizer=opti)
+epochs = 100
+batch_size = 32
+model.fit(X, y, epochs=epochs, batch_size=batch_size, shuffle = True)
+12.28
+Our Model
+_________________________________________________________________
+Layer (type) Output Shape Param #
+=================================================================
+input_20 (InputLayer) (None, None) 0
+embedding_4 (Embedding) (None, None, 100) 443800
+lstm_4 (LSTM) (None, 256) 365568
+dense_41 (Dense) (None, 4438) 1140566
+Total params: 1,949,934
+Trainable params: 1,949,934
+Non-trainable params: 0
+12.29
+Distribution of word probabilities following various sequences
+12.30
+Generating New Text
+Algorithm
+• Provide some input text to the LSTM
+• Let it predict the next word
+• Output vector (softmax) provides probabilities for next word
+• Pick one using a stochastic approach (rather than always the maximum)
+• We use a temperature parameter; lower temperature means more
+deterministic choice
+12.31
+Output Examples
+12.32
+Improvements
+More advanced networks
+• Use multiple stacked LSTM layers to learn deeper features
+12.33
+Encoder-Decoder Models
+Other tasks
+Not just predicting next word:
+Translation: from one language into another (e.g., English → German)
+Question generation: input text, generate question that could be asked about the
+text
+Summarization: condense a longer text into a shorter one
+Encoder-Decoder
+For this type of problem, we use an encoder-decoder network
+12.34
+Encoder-Decoder Network for Translation
+12.35
+Question and Answer Generator
+Given an input text
+The winning goal was scored by 23-year-old striker Joe Bloggs during the match
+between Arsenal and Barcelona . Arsenal recently signed the striker for 50 million
+pounds . The next match is in two weeks time, on July 31st 2005 . "
+Answer Generation Network
+"Joe Bloggs"
+"Arsenal"
+"Barcelona"
+"50 million pounds"
+"July 31st 2005"
+Question Generation Network
+"Who scored the winning goal?"
+"Who won the match?"
+"Who were Arsenal playing?"
+"How much did the striker cost?"
+"When is the next match?"
+12.37
+Model in Keras for generating question-answer pairs
+from keras.layers import Input, Embedding, GRU, Bidirectional, Dense, Lambda
+from keras.models import Model, load_model
+import keras.backend as K
+from qgen.embedding import glove
+#### PARAMETERS ####
+VOCAB_SIZE = glove.shape[0] # 9984
+EMBEDDING_DIMENS = glove.shape[1] # 100
+GRU_UNITS = 100
+DOC_SIZE = None
+ANSWER_SIZE = None
+Q_SIZE = None
+document_tokens = Input(shape=(DOC_SIZE,), name="document_tokens")
+embedding = Embedding(input_dim = VOCAB_SIZE, output_dim = EMBEDDING_DIMENS,
+weights=[glove], mask_zero = True, name = ’embedding’)
+document_emb = embedding(document_tokens)
+answer_outputs = Bidirectional(GRU(GRU_UNITS, return_sequences=True),
+name = ’answer_outputs’)(document__emb)
+answer_tags = Dense(2, activation = ’softmax’,
+name = ’answer_tags’)(answer_outputs)
+12.39
+12.40
+“Heavy” models: BERT, ELMo, GPT, ...
+https://www.infoq.com/presentations/nlp-practitioners/
+12.41
+Open Source BERT
+https://ai.googleblog.com/2018/11/open-sourcing-bert-state-of-art-pre.html
+12.42
+BERT Transfer Learning
+[The Illustrated BERT, ELMo, and co., http://jalammar.github.io/illustrated-bert/]
+http://jalammar.github.io/illustrated-bert/]
+12.43
+BERT Pre-trained Variants
+https://towardsdatascience.com/bert- for-dummies-step-by-step-tutorial- fb90890ffe03
+https://towardsdatascience.com/bert-for-dummies-step-by-step-tutorial-fb90890ffe03
+12.44
+The Stanford Question Answering Dataset (SQuAD)
+https://rajpurkar.github.io/SQuAD-explorer/
+12.45
+BERT Performance on SQuAD
+12.46
+Training BERT
+BERT is open source, so train it yourself?
+“A DGX-2 server with 16 V100s trained BERT-Large in under 3 days”
+https://devblogs.nvidia.com/training-bert-with-gpus/
+https://www.nvidia.com/en-gb/data-center/tesla-v100/
+12.47
+https://huggingface.co/
+12.48
+BERT in Google Search (I)
+https://www.blog.google/products/search/search-language-understanding-bert
+12.49
+BERT in Google Search (II)
+Started rollout for English Google search in October 21, 2019
+12.50
+Model size comparison
+12.51
+Transformer Architecture
+The Illustrated Transformer, http://jalammar.github.io/illustrated- transformer/
+http://jalammar.github.io/illustrated-transformer/
+12.52
+Transformer Architecture (II)
+12.53
+Transformer Architecture (III)
+12.54
+Transformer Architecture (IV)
+12.55
+Transformer Architecture (V)
+[The Illustrated Transformer, http://jalammar.github.io/illustrated-transformer/]
+12.56
+GPT-2: The “unicorn” example
+Human Input
+“In a shocking finding, scientist discovered a herd of unicorns living in a remote,
+previously unexplored valley, in the Andes Mountains. Even more surprising to the
+researchers was the fact that the unicorns spoke perfect English.”
+GPT-2 Generated Output
+“The scientist named the population, after their distinctive horn, Ovid’s Unicorn.
+These four-horned, silver-white unicorns were previously unknown to science.
+Now, after almost two centuries, the mystery of what sparked this odd phenomenon
+is finally solved.
+Dr. Jorge Pérez, an evolutionary biologist from the University of La Paz, and several
+companions, were exploring the Andes Mountains when they found a small valley,
+with no other animals or humans. Pérez noticed that the valley had what appeared
+to be a natural fountain, surrounded by two peaks of rock and silver snow.
+Pérez and the others then ventured further into the valley. “By the time we reached
+the top of one peak, the water looked blue, with some crystals on top,” said Pérez.”
+...
+See https://openai.com/blog/better-language-models/#sample1
+https://openai.com/blog/better-language-models/#sample1
+12.57
+Another example...
+“For today’s homework assignment, please describe the reasons for the US Civil
+War.”
+“It is easy to identify why the Civil War happened, because so many people and so
+many books and so much television and films tell us that it was the cause, that it
+has something to do with race or economics or religion. There is much agreement
+that it was essentially a war of slavery on behalf of capitalism, about a century of
+slavery. But that’s not what most people think of when they think of the Civil War.
+Many people think of the war as about states rights. You’re not wrong about that,
+but it’s kind of misleading to say that the Civil War was a conflict between states’
+rights and federalism. So let’s try again. What’s the idea that has inspired so many
+people to go onto the battlefields of Gettysburg and Antietam and Gettysberg and
+Petersburg and Fredericksburg? The American idea of the republic–a notion of
+limited government–is a great part of the history....”
+See https://openai.com/blog/better-language-models/#sample6
+https://openai.com/blog/better-language-models/#sample6
+12.58
+GPT-2 Release Controversy
+Initial Announcement
+• OpenAI announced GPT-2 in February 14, 2019
+https://openai.com/blog/better-language-models/
+• They initially refused to make the model or training data public, saying that it is
+too dangerous, with potential misuse for generating fake news or for phishing
+purposes, identity theft, manipulation of social media content, etc.
+• This was harshly criticized by many members of the research community
+https://anima-ai.org/2019/02/18/an-open-and-shut-case-on-openai/
+GPT-2 Release
+GPT-2 was finally released on November 5, 2019:
+https://openai.com/blog/gpt-2-1-5b-release/
+12.59
+OpenAI’s current model: GPT-3
+Introduced in a July 2020 paper (https://arxiv.org/pdf/2005.14165.pdf)
+• 96 layers and 175 billion parameters
+• cost to train: est. $5 million
+• cost to run (yearly cloud costs): est. $87,000
+See https://bdtechtalks.com/2020/09/21/gpt-3-economy-business-model/
+Now fully commercial
+• OpenAI moved from non-profit to for-profit in 2019
+• GPT-3 is only available via paid cloud API
+• Microsoft exclusively licensed the GPT-3 source code
+https://openai.com/blog/openai-licenses-gpt-3-technology-to-microsoft/
+https://arxiv.org/pdf/2005.14165.pdf
+https://bdtechtalks.com/2020/09/21/gpt-3-economy-business-model/
+12.60
+https://towardsdatascience.com/gpt-3-the-new-mighty-language-model-from-openai-a74ff35346fc
+12.61
+GPT-3 Tasks
+GPT-3 can basically do all NLP tasks
+• Generate text
+• Generate code
+• Answer questions
+• Chat
+• Summarization
+• Translate between languages
+• ...
+See some examples at
+https://www.twilio.com/blog/ultimate-guide-openai-gpt-3-language-model
+12.62
+Example application: Generating press releases
+https://www.youtube.com/watch?v=rFZ75HkY9bo
+12.63
+GPT-3: A billion times more complex than Eliza, but does it understand
+anything?
+12.64
+12.65
+Reading Material
+Supplemental
+• [Fos19, Chapter 6] (LSTM)
+• [LHH19, Chapters 8–10] (RNN, LSTM, Seq2Seq)
+12.66
+References
+[Fos19] David Foster.
+Generative Deep Learning: Teaching Machines to Paint, Write, Compose,
+and Play.
+O’Reilly, 2019.
+https://concordiauniversity.on.worldcat.org/oclc/1136155457.
+[LHH19] Hobson Lane, Cole Howard, and Hannes Max Hapke.
+Natural Language Processing in Action.
+Manning Publications Co., 2019.
+https://concordiauniversity.on.worldcat.org/oclc/1102387045.
+https://concordiauniversity.on.worldcat.org/oclc/1136155457
+https://concordiauniversity.on.worldcat.org/oclc/1102387045
+Deep Learning
+Introduction
+ImageNet
+AlexNet
+RNNs and LSTMs
+Recurrent Neural Networks (RNNs)
+Long Short-Term Memory Networks (LSTMs)
+Sequence-to-Sequence Models
+Transformers
+BERT
+GPT-2
+GPT-3
+Notes and Further Reading

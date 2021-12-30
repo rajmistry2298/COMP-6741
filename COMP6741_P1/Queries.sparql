@@ -1,0 +1,231 @@
+PREFIX unidata: <http://uni.io/data#> 
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX dcmitype: <http://purl.org/dc/dcmitype/> 
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX uni: <http://uni.io/schema#> 
+PREFIX dbo: <http://dbpedia.org/ontology/> 
+PREFIX dbr: <http://dbpedia.org/resource/> 
+PREFIX un: <http://www.w3.org/2007/ont/unit#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
+
+# Question 1
+# What is the course [title] and [description] of [subject] [number]?
+# What is the course title and description of COMP 6741?
+SELECT ?title ?descr
+WHERE {
+  	?course dcmitype:subject "COMP" .
+    ?course dcmitype:identifier "6741" .
+	?course dcterms:title ?title .
+  	?course dcterms:description ?descr
+}
+
+# Question 2
+# Which topics are covered in [subject] [number] lectures?
+# Which topics are covered in [COMP] [6741] lectures?
+SELECT ?course ?lecture ?topic
+WHERE {
+  	?course1 dcmitype:subject "COMP" .
+    ?course1 dcmitype:identifier "6741" .
+  	?course1 dcterms:title ?course .
+	?lecture1 dcterms:isPartOf ?course1 .
+  	?lecture1 dcmitype:identifier ?lecture .
+    ?lecture1 uni:topic ?topic
+} ORDER BY ?lecture
+
+# Question 3
+# Which lecture of [subject][number] covers [topic]?
+# Which lecture of [COMP][6741] covers [Knowledge_grap]?
+SELECT ?number
+WHERE {
+  	?course dcmitype:subject "COMP" .
+    ?course dcmitype:identifier "6741" .
+	?lecture dcterms:isPartOf ?course .
+    ?lecture uni:topic dbr:Knowledge_Graph .
+    ?lecture dcmitype:identifier ?number
+}
+
+# Question 4
+# How many courses are offered at Concordia University?
+SELECT (count(?courseId) as ?CourseCount)
+WHERE{
+    ?courseId rdf:type uni:Course
+}
+
+# Question 5
+# What are the recommended reading materials for [subject][number] by lecture?
+# What are the recommended reading materials for [COMP][6741] by lecture?
+SELECT ?number ?source
+WHERE {
+  	?course dcmitype:subject "COMP" .
+    ?course dcmitype:identifier "6741" .
+	?lecture uni:hasContent ?content .
+    ?lecture dcterms:isPartOf ?course .
+  	?lecture dcmitype:identifier ?number .
+    ?content dcterms:type "READING" .
+    ?content dcterms:source ?source . 
+} order by ?number
+
+
+# Question 6
+# What are the contents in [subject][number] for each lecture?
+# What are all the contents for COMP 6741 for each lecture?
+SELECT ?number ?content_type ?source
+WHERE {
+  	?course dcmitype:subject "COMP" .
+    ?course dcmitype:identifier "6741" .
+	?lecture uni:hasContent ?content .
+    ?lecture dcterms:isPartOf ?course .
+  	?lecture dcmitype:identifier ?number .
+    ?content dcterms:type ?content_type .
+    ?content dcterms:source ?source . 
+} order by ?number
+
+# Question 7
+# Does [subject][number] and [subject][number] cover similar topic?
+# Does COMP 6741 and comp 6721 cover similar topic?
+ASK
+{
+  	?course1 dcmitype:subject "COMP" .
+    ?course1 dcmitype:identifier "6741" .
+    ?course1 uni:topic ?topic1 .
+    ?lecture1 dcterms:isPartOf ?course1 .
+    ?lecture1  uni:topic ?topic3 .
+    ?course2 dcmitype:subject "COMP" .
+    ?course2 dcmitype:identifier "6721" .
+    ?course2 uni:topic ?topic2 .
+    ?lecture2 dcterms:isPartOf ?course2 .
+    ?lecture1  uni:topic ?topic4 .
+    FILTER(?topic1 = ?topic2 || ?topic3 = ?topic4 ) .
+}
+
+#Question 8
+# What is the outline for [Subject] [number] ?
+# What is the outline for COMP 6741 ?
+SELECT  ?outline
+WHERE {
+  	?course rdf:type uni:Course .
+  	?course dcmitype:subject "COMP" .
+  	?course dcmitype:identifier "6741" .
+  	?course uni:hasContent ?content .
+    ?content dcterms:type "OUTLINE" .
+    ?content dcterms:source ?outline .
+}
+
+# Question 9
+# Which courses cover [topic]?
+# Which courses cover [Machine_learning]?
+SELECT (concat(?subject, " ", ?number) AS ?courseName)
+WHERE {
+  	?course dcmitype:subject ?subject .
+    ?course dcmitype:identifier ?number .
+	?lecture dcterms:isPartOf ?course .
+    ?lecture uni:topic dbr:Machine_learning .
+}
+
+# Question 10
+# Does [subject][number] has [event]?
+# Does [COMP][6841] has [LAB]?
+ASK{
+  	?course dcmitype:subject "COMP" .
+    ?course dcmitype:identifier "6741" .
+  	?lecture dcterms:isPartOf ?course .
+    ?event dcterms:isPartOf ?lecture .
+    ?event dcterms:type "LAB".
+}
+
+
+# Cut-off. Questions tested but not included in list of 10 questions
+
+# Question 11
+# Which slide is given for lecture [number] of [subject] [number] ?
+# Which slide is given for lecture 1 of COMP 6741 ?
+SELECT  ?slide
+WHERE {
+  	?course rdf:type uni:Course .
+  	?course dcmitype:subject "COMP" .
+  	?course dcmitype:identifier "6741" .
+  	?lecture dcterms:isPartOf ?course .
+  	?lecture dcmitype:identifier "1" .
+  	?lecture uni:hasContent ?content .
+    ?content dcterms:type "SLIDES" .
+    ?content dcterms:source ?slide .
+} 
+
+
+#Question 12
+# What is the topic of lab [number] of [subject] [number] ?
+# What is the topic of lab 7 of COMP 6721 ?
+SELECT ?topic
+WHERE{
+  	?course dcmitype:subject "COMP" .
+    ?course dcmitype:identifier "6721" .
+  	?lecture dcterms:isPartOf ?course .
+  	?lecture dcmitype:identifier "7" .
+    ?event dcterms:isPartOf ?lecture .
+    ?event dcterms:type "LAB".
+  	?event uni:topic ?topic .
+}
+
+
+#Question 13
+# What is the name of Course [subject] [number] ?
+# What is the name of Course SOEN 6471?
+SELECT ?title
+WHERE{
+  	?course rdf:type uni:Course .
+  	?course dcmitype:subject "SOEN" .
+  	?course dcmitype:identifier "6471" .
+  	?course dcterms:title ?title
+}
+
+
+#Question 14
+#What is the recommended reading materials for lecture [number] of [subject][number]?
+SELECT  ?source
+WHERE {
+  	?course rdf:type uni:Course .
+  	?course dcmitype:subject "COMP" .
+  	?course dcmitype:identifier "6741" .
+  	?lecture dcterms:isPartOf ?course .
+  	?lecture dcmitype:identifier "1" .
+  	?lecture uni:hasContent ?content .
+    ?content dcterms:type "READING" .
+    ?content dcterms:source ?source . 
+}
+
+#Question 15
+# Give me all the courses for [subject].
+# Give me all the courses for COMP.
+SELECT (concat(?subject, " ", ?number) AS ?courseName) ?title
+WHERE {
+  	?course dcmitype:subject "COMP" .
+  	?course dcmitype:subject ?subject .
+    ?course dcmitype:identifier ?number .
+	?course dcterms:title ?title .
+} ORDER BY ?number
+
+#Statistics
+#count course
+SELECT (count(?course) as ?CourseCount)
+WHERE{
+    ?course rdf:type uni:Course
+}
+
+
+#count lecture
+SELECT (count(?lecture) as ?lectureCount)
+WHERE{
+    ?lecture rdf:type uni:Lecture
+}
+
+#count content
+SELECT (count(?content) as ?contentCount)
+WHERE{
+    ?content rdf:type dcterms:BibliographicResource
+}
+
+#count event
+SELECT (count(?event) as ?eventCount)
+WHERE{
+    ?event rdf:type uni:Event
+}

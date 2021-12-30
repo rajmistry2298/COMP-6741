@@ -1,0 +1,16 @@
+COMP 6721 Applied Artificial Intelligence (Winter 2021)
+Worksheet #9: Introduction to Natural Language Processing
+Sentence Probability. Given the following bigram probabilities, compute the probability for the sentence:
+P (I want to eat British food)
+=
+Parsing. Given the following lexicon and context-free grammar, create a parse tree for the sentence, “I prefer a
+direct flight to Chicago.”:
+Step 1: Assign a part-of-speech (POS) tag to each word:
+I prefer a direct flight to Chigaco.
+Step 2: Draw a legal parse tree:
+Word Sense Disambiguation. Using the following probabilities you obtained from a training corpus:
+Using 0.5 smoothing as shown above, using a context window of ±3, find the correct sense for bank in the sentence,
+“I like the Potomac bank.”:
+1. Score(BANK1) =
+2. Score(BANK2) =
+(Words not shown above have an unsmoothed probability of 0.)

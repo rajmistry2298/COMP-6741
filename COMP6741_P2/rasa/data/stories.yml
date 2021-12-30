@@ -1,0 +1,55 @@
+version: "2.0"
+
+stories:
+
+- story: happy path
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_great
+  - action: utter_happy
+
+- story: sad path 1
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_unhappy
+  - action: utter_cheer_up
+  - action: utter_did_that_help
+  - intent: affirm
+  - action: utter_happy
+
+- story: sad path 2
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: mood_unhappy
+  - action: utter_cheer_up
+  - action: utter_did_that_help
+  - intent: deny
+  - action: utter_goodbye
+
+- story: get person info
+  steps:
+    - intent: greet
+    - action: utter_greet
+    - intent: about_person
+    - action: action_person_info
+
+- story: get course info
+  steps:
+  - intent: greet
+  - action: utter_iamunibot
+  - or:
+    - intent: about_course
+    - intent: about_outline
+    - intent: about_course_number
+    - intent: about_course_reading
+    - intent: about_same
+    - intent: about_subject
+    - intent: about_course_content
+    - intent: about_lecture_topics
+    - intent: about_event
+    - intent: about_lecture_by_topic
+    - intent: about_course_by_topic
+  - action: action_course_query

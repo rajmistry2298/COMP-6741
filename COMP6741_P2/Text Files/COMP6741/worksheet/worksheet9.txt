@@ -1,0 +1,54 @@
+COMP474/6741 Intelligent Systems (Winter 2021)
+Worksheet #9: Neural Networks & Word Embeddings
+Task 1. Word analogy questions often appear on standardized tests, like the SSAT, to test language aptitude
+and reasoning. Here’s a simple one (fill in the blank): Japan is to Sushi what Germany is to
+Can we solve this type of question with an AI? Stay tuned for the answer!
+Task 2. Calculate your first neuron activation for the Perceptron (only 100 billion−1 more to go!):
+Your input vector ~x = [0, 1, 1] and your
+weights are ~w = [0.25, 0.5, 0.75].
+Activation function:
+f(~x) =
+{
+1, if ~x · ~w ≥ threshold
+0, otherwise
+(use a threshold of 0.5):
+Task 3. Let’s train our Perceptron to learn the logical and function. Here, we have a two-dimensional
+input vector and four labeled training examples l0, . . . , l3:
+x0 x1 x0 ∧ x1
+l0 1 1 1
+l1 1 0 0
+l2 0 1 0
+l3 0 0 0
+Epoch Input w0 w1 w2 f(~x) ok?
+0
+l0 0 0 0
+l1
+l2
+l3
+1
+l0
+Note that x2 is our bias (input always 1). Use a threshold for the activation function of 0.5 and a learning
+rate η = 0.1. Train the Perceptron by checking the output for each training sample. Update the weights if
+there is an error: w′i = wi + η · (label − predicted) · xi.
+Task 4. Here are three words in one-hot vector representation (three words, so three dimensions):
+What is the distance between the one-
+hot word vectors for (cat, dog) and
+(cat, house):
+Using the Euclidian distance,
+d(~p, ~q) =
+√∑n
+i=1(pi − qi)2
+Task 5. Ok, now re-write the question from Task 1 in form of a word vector calculation:
+Task 6. Compute the softmax function σ on the vector v below:
+σ(z)j =
+ezj∑K
+k=1 e
+zk
+v =
+
+0.50.9
+0.2
+
+ σ(v) =
+
+
